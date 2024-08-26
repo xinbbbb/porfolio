@@ -34,6 +34,7 @@ const LandingSection = () => {
       const { type, message } = response
       // onOpen(type, message)
       alert(JSON.stringify(message, null, 2));
+
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required('Required'),
