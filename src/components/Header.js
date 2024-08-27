@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const socials = [
   {
@@ -33,7 +33,34 @@ const socials = [
 ];
 
 const Header = () => {
-  // TODO 这里有个剪头函数，不知道为啥
+
+  const prehightRef = useRef(null)
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [transform, setTransform] = useState('translateY(0)');
+
+  const previousHight = prehightRef.current;
+
+  useEffect(() => {
+
+    const handleScroll = () => {
+      const position = window.scrollY;
+      setScrollPosition(position);
+      if (previousHight > prehightRef.current) {
+        // Scrolling up
+        setTransform('translateY(0)');
+      } else {
+        // Scrolling down
+        setTransform('translateY(-200px)');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    prehightRef.current = scrollPosition
+
+
+    return window.addEventListener('scroll', handleScroll);
+  }, [scrollPosition])
+
   const handleClick = (anchor) => {
     const id = `${anchor}-section`;
     const element = document.getElementById(id);
@@ -52,6 +79,7 @@ const Header = () => {
       left={0}
       right={0}
       translateY={0}
+      transform={transform}
       transitionProperty="transform"
       transitionDuration=".3s"
       transitionTimingFunction="ease-in-out"
