@@ -11,7 +11,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
 import * as Yup from 'yup';
 import { useAlertContext } from "../context/alertContext";
 import useSubmit from "../hooks/useSubmit";
@@ -20,6 +20,15 @@ import FullScreenSection from "./FullScreenSection";
 const LandingSection = () => {
   const { isLoading, response, submit } = useSubmit();
   const { onOpen } = useAlertContext();
+  useEffect(() => {
+    if (response) {
+      const { type, message } = response
+      onOpen(type, message)
+      if (type === 'success') {
+        formik.resetForm();
+      }
+    }
+  }, [response])
 
   const formik = useFormik({
     initialValues: {
@@ -29,12 +38,7 @@ const LandingSection = () => {
       comment: ''
     },
     onSubmit: async (values) => {
-
       await submit('', values)
-      const { type, message } = response
-      // onOpen(type, message)
-      alert(JSON.stringify(message, null, 2));
-
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required('Required'),
